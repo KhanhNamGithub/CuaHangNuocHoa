@@ -1,0 +1,160 @@
+CREATE DATABASE QLBanHang
+
+USE QLBanHang
+	
+
+-- Tạo bảng KhachHang
+-- Tạo bảng KhachHang
+CREATE TABLE KhachHang (
+    MaKH NVARCHAR(7) PRIMARY KEY,
+    TenKH NVARCHAR(100), -- Tăng độ dài lên để chứa tên dài hơn
+    Sdt NVARCHAR(15),    -- Tăng độ dài để chứa số điện thoại dài hơn
+    ThanhVien NVARCHAR(20) -- Tăng độ dài lên để chứa thông tin thành viên dài hơn
+);
+
+-- Tạo bảng NhanVien
+CREATE TABLE NhanVien (
+    MaNV NVARCHAR(7) PRIMARY KEY,
+    TenNV NVARCHAR(100), -- Tăng độ dài lên để chứa tên dài hơn
+    Sdt NVARCHAR(15),    -- Tăng độ dài để chứa số điện thoại dài hơn
+    ChucVu NVARCHAR(50),
+    DiaChi NVARCHAR(100) -- Tăng độ dài lên để chứa địa chỉ dài hơn
+);
+
+-- Tạo bảng NhaCungCap
+CREATE TABLE NhaCungCap (
+    MaNCC NVARCHAR(7) PRIMARY KEY,
+    TenNCC NVARCHAR(100), -- Tăng độ dài lên để chứa tên dài hơn
+    DiaChi NVARCHAR(100), -- Tăng độ dài lên để chứa địa chỉ dài hơn
+    Sdt NVARCHAR(15)      -- Tăng độ dài để chứa số điện thoại dài hơn
+);
+
+-- Tạo bảng SanPham
+CREATE TABLE SanPham (
+    MaSP NVARCHAR(7) PRIMARY KEY,
+    TenSP NVARCHAR(100), -- Tăng độ dài lên để chứa tên sản phẩm dài hơn
+    GiaSP INT,
+    DonViTinh NVARCHAR(20), -- Giữ nguyên vì đơn vị tính thường ngắn
+    MaNCC NVARCHAR(7),
+    HinhAnh NVARCHAR(1000), -- Tăng độ dài lên để chứa đường dẫn hình ảnh dài hơn
+    CONSTRAINT FK_SanPham_NhaCungCap FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC)
+);
+
+-- Tạo bảng ThanhToan
+CREATE TABLE ThanhToan (
+    MaHD INT PRIMARY KEY,
+    MaKH NVARCHAR(7),
+    MaSP NVARCHAR(7),
+    MaNV NVARCHAR(7),
+    SoLuong INT,
+    NgayIn NVARCHAR(20),  -- Điều chỉnh độ dài cho phù hợp với định dạng ngày
+    GiamGia INT,
+    TongHDCT INT,
+    CONSTRAINT FK_ThanhToan_KhachHang FOREIGN KEY (MaKH) REFERENCES KhachHang(MaKH),
+    CONSTRAINT FK_ThanhToan_SanPham FOREIGN KEY (MaSP) REFERENCES SanPham(MaSP),
+    CONSTRAINT FK_ThanhToan_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV)
+);
+
+-- Tạo bảng LOGINS
+CREATE TABLE LOGINS (
+    MaNV NVARCHAR(7),
+    TenTaiKhoan NVARCHAR(50), -- Chuyển từ CHAR sang NVARCHAR để linh hoạt hơn
+    MatKhau NVARCHAR(50),     -- Chuyển từ CHAR sang NVARCHAR để linh hoạt hơn
+    role NVARCHAR(50),
+    CONSTRAINT FK_LOGINS_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV)
+);
+
+
+
+
+
+INSERT INTO NhanVien (MaNV, TenNV, Sdt, ChucVu, DiaChi)
+VALUES
+('NV001','Ngo Van Lien','0904568154','NhanVien','BacLieu'),
+('NV002','Tran Dang Linh','0604585156','QuanLi','CanTho'),
+('NV003','Nguyen Bich Ngoc','0907658245','NhanVien','VinhLong');
+
+INSERT INTO NhaCungCap (MaNCC, TenNCC, DiaChi, Sdt)
+VALUES
+('NCC001','Dior','TPHCM','0908462485'),
+('NCC002','Chanel','HaNoi','0764825124'),
+('NCC003','Charme','HaNoi','0612584752'),
+('NCC004','Calvin Klein','HaNoi','0942581547');
+
+INSERT INTO SanPham (MaSP, TenSP, GiaSP, DonViTinh, MaNCC, HinhAnh)
+VALUES
+('SP001', N'Nuoc hoa Charme King',500000,'VND','NCC003','E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\CharmeKing.jpg'),
+('SP002', N'Nuoc hoa Dior 100ml',560000,'VND','NCC001','E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Dior 100ml.jpg'),
+('SP003', N'Nuoc hoa Chanel',760000,'VND','NCC002','E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Chanel bleu de.jpg'),
+('SP004', N'Nuoc hoa Gucci Guilty Pour Homme', 2100000, 'VND', 'NCC001', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Gucci Guilty Pour Homme.jpg'),
+('SP005', N'Nuoc hoa Chanel No.5 Eau de Parfum', 3300000, 'VND', 'NCC002', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Chanel No.5 Eau de Parfum.jpg'),
+('SP006', N'Nuoc hoa Dior Sauvage Eau de Toilette', 2500000, 'VND', 'NCC003', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Dior Sauvage Eau de Toilette.jpg'),
+('SP007', N'Nuoc hoa Lancôme La Vie Est Belle Eau de Parfum', 2700000, 'VND', 'NCC003', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Lancome La Vie Est Belle Eau de Parfum.jpg'),
+('SP008', N'Nuoc hoa Versace Eros Pour Homme Eau de Toilette', 2200000, 'VND', 'NCC002', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Versace Eros Pour Homme Eau de Toilette.jpg'),
+('SP009', N'Nuoc hoa Armani Acqua di Gio Profondo Eau de Parfum', 2600000, 'VND', 'NCC001', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Armani Acqua di Gio Profondo Eau de Parfum.jpg'),
+('SP010', N'Nuoc hoa Yves Saint Laurent Black Opium Eau de Parfum', 2900000, 'VND', 'NCC002', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Yves Saint Laurent Black Opium Eau de Parfum.jpg'),
+('SP011', N'Nuoc hoa Prada Luna Rossa Ocean Eau de Toilette', 2300000, 'VND', 'NCC003', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Prada Luna Rossa Ocean Eau de Toilette.jpg'),
+('SP012', N'Nuoc hoa Paco Rabanne Invictus Aqua Eau de Toilette', 1900000, 'VND', 'NCC003', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Paco Rabanne Invictus Aqua Eau de Toilette.jpg'),
+('SP013', N'Nuoc hoa Burberry Her Eau de Parfum', 2400000, 'VND', 'NCC001', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Burberry Her Eau de Parfum.jpg'),
+('SP014', N'Nuoc hoa Valentino Donna Born in Roma Eau de Parfum', 2800000, 'VND', 'NCC001', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Valentino Donna Born in Roma Eau de Parfum.jpg'),
+('SP015', N'Nuoc hoa Chloe Nomade Eau de Parfum', 2500000, 'VND', 'NCC002', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Chloe Nomade Eau de Parfum.jpg'),
+('SP016', N'Nuoc hoa Jo Malone London English Pear & Freesia Cologne', 2200000, 'VND', 'NCC001', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Jo Malone London English Pear & Freesia Cologne.jpg'),
+('SP017', N'Nuoc hoa Tom Ford Black Orchid Eau de Parfum', 3100000, 'VND', 'NCC002', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Tom Ford Black Orchid Eau de Parfum.jpg'),
+('SP018', N'Nuoc hoa Molecule 01 Escentric Molecules Eau de Toilette', 2400000, 'VND', 'NCC003', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Molecule 01 Escentric Molecules Eau de Toilette.jpg'),
+('SP019', N'Nuoc hoa Byredo Gypsy Rose Eau de Parfum', 2900000, 'VND', 'NCC002', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Byredo Gypsy Rose Eau de Parfum.jpg'),
+('SP020', N'Nuoc hoa Le Labo Santal 33 Eau de Parfum', 2600000, 'VND', 'NCC002', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Le Labo Santal 33 Eau de Parfum.jpg'),
+('SP021', N'Nuoc hoa Kilian Love & Hate Eau de Parfum', 3300000, 'VND', 'NCC003', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Kilian Love & Hate Eau de Parfum.jpg'),
+('SP022', N'Nuoc hoa Louis Vuitton Attrape Rêves Eau de Parfum', 2800000, 'VND', 'NCC001', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Louis Vuitton Attrape Reves Eau de Parfum.jpg'),
+('SP023', N'Nuoc hoa Cartier La Panthère Eau de Parfum', 3200000, 'VND', 'NCC002', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Cartier La Panthere Eau de Parfum.jpg'),
+('SP024', N'Nuoc hoa Diptyque Eau Rose Eau de Toilette', 2500000, 'VND', 'NCC001', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Diptyque Eau Rose Eau de Toilette.jpg'),
+('SP025', N'Nuoc hoa Hermès Twilly', 2400000, 'VND', 'NCC002', 'E:\LuuDuLieuSinhVien\VNTT\JAVA\QuanLiCuaHangBanNuocHoa\src\Hinh_anh\\Nuoc hoa Hermes Twilly.jpg')
+
+INSERT INTO KhachHang (MaKH, TenKH, Sdt, ThanhVien)
+VALUES
+('KH001','Nguyen Thi Thu Ha','0761548257','normal'),
+('KH002','Nguyen Ngoc Tuyen','0945211851','vip'),
+('KH003','Ngo Bich Tram','0774854157','vip'),
+('KH004','Tran Thi Thanh Ngan','0948245678','normal'),
+('KH005','Tran Huyen Tram','0745821564','vip'),
+('KH006','Nguyen Ngoc Huyen','0987245611','vip');
+
+INSERT INTO ThanhToan (MaHD, MaKH, MaSP, MaNV, SoLuong, NgayIn, GiamGia)
+VALUES
+(1,'KH002','SP001','NV003',2,'11-8-2022',50000),
+(2,'KH001','SP003','NV003',1,'11-8-2022',0),
+(3,'KH003','SP001','NV001',1,'12-8-2022',25000),
+(4,'KH004','SP003','NV001',1,'12-8-2022',20000),
+(5,'KH005','SP002','NV003',4,'13-8-2022',50000),
+(6,'KH006','SP003','NV001',1,'13-8-2022',28000);
+
+INSERT INTO LOGINS (MaNV, TenTaiKhoan, MatKhau, role)
+VALUES
+('NV001','nv001','admin','admin'),
+('NV002','nv002','quanli','quanli'),
+('NV003','nv003','nhanvien','nhanvien');
+
+IF OBJECT_ID('trg_CalculateTongHDCT', 'TR') IS NOT NULL
+BEGIN
+    DROP TRIGGER trg_CalculateTongHDCT;
+END
+GO
+
+-- Tạo trigger để tính TongHDCT trong bảng ThanhToan
+CREATE TRIGGER trg_CalculateTongHDCT
+ON ThanhToan
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    -- Cập nhật giá trị TongHDCT
+    UPDATE tt
+    SET TongHDCT = (sp.GiaSP * i.SoLuong - ISNULL(i.GiamGia, 0))
+    FROM ThanhToan tt
+    INNER JOIN inserted i ON tt.MaHD = i.MaHD
+    INNER JOIN SanPham sp ON i.MaSP = sp.MaSP;
+END
+GO
+
+
+
+SELECT * FROM ThanhToan
+
